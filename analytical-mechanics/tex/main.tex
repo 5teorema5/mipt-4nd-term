@@ -1,0 +1,226 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+\usepackage{cmap}					% поиск в PDF
+\usepackage{mathtext} 				% русские буквы в фомулах
+\usepackage[T2A]{fontenc}			% кодировка
+\usepackage[utf8]{inputenc}			% кодировка исходного текста
+\usepackage[english,russian]{babel}	% локализация и переносы
+
+\usepackage{euscript}	 % Шрифт Евклид
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\setbeamercolor{title}{fg=blue} % Синий цвет
+\setbeamerfont{title}{series=\bfseries,size=\LARGE} % Жирный + размер
+
+% Цвета МФТИ
+\definecolor{mipt-blue}{RGB}{0,51,153}
+
+\title{Исследование маятника Капицы}
+\author{Лохматов Арсений, Цветкова Амелия}
+\date{Май, 2025}
+
+\begin{document}
+
+\begin{frame}
+    \begin{center}
+    {\small МОСКОВСКИЙ ФИЗИКО-ТЕХНИЧЕСКИЙ ИНСТИТУТ (НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ)}
+
+    {Физтех-школа аэрокосмических технологий}
+    \end{center}
+
+
+    \begin{center}
+    {\color{mipt-blue}\bfseries \Large Исследование маятника Капицы}
+    \linebreak
+    \end{center}
+    
+    \begin{flushright}
+                       {\small Работу выполнили\\
+                       Лохматов Арсений Игоревич\\
+                       Цветкова Амелия Антоновна\\
+                       Б03-303 }
+    \end{flushright}
+
+    \vspace{\fill}
+
+    \begin{center}
+        \includegraphics[width=0.15\linewidth]{dasr.png}
+    \end{center}
+
+    \begin{center}
+    \tiny Долгопрудный, 2025
+    \end{center}
+\end{frame}
+
+\begin{frame}{О чём сегодня говорим?}
+    \tableofcontents
+\end{frame}
+
+\section{Маятник Капицы и его законы движения}
+\begin{frame}{Энергия маятника Капицы}
+    Координаты $x$ и $y$ груза равны:
+    \[ \begin{cases} x=l\sin{\theta} \\ y=-l\cos{\theta}+A\cos{\omega t} \end{cases} \] 
+    Потенциальная энергия маятника в поле тяжести задаётся положением грузика по вертикали $y$
+    \[ E_\text{пот}=mgy=-mg(l\cos{\theta}-A\cos{\omega t}) \]
+
+    Для кинетической энергии имеем
+    \[ E_\text{кин}=\frac{m}{2}(\dot{x}^2+\dot{y}^2)=\frac{m}{2}((l\cos{\theta}\dot{\theta})^2+(l\sin{\theta\dot{\theta}-A\omega\sin{\omega t}})^2)= \]
+    \[ =\frac{ml^2}{2}\dot{\theta}^2-mAl\omega\sin{\omega t}\sin{\theta}\dot{\theta}+\frac{mA^2\omega^2}{2}\sin^2{\omega t} \]
+
+    Полная энергия даётся суммой кинетической и потенциальной энергий
+    \[ E_{\text{полная}}=E_\text{пот}+E_\text{кин} \]
+\end{frame}
+
+\begin{frame}{Энергия маятника Капицы}
+    А лагранжиан системы даётся разностью этих энергий
+
+    \[ L=E_\text{кин}-E_\text{пот}=\frac{ml^2}{2}\dot{\theta}^2-mAl\omega\sin{\omega t}\sin{\theta}\dot{\theta}+\frac{mA^2\omega^2}{2}\sin^2{\omega t}+ \]
+    \[ +mg(l\cos{\theta}-A\cos{\omega t}) \]
+
+\end{frame}
+
+\begin{frame}{Уравнение движения Маятника Капицы}
+    Уравнение движения такой системы удовлетворяют уравнению Эйлера-Лагранжа, которое выглядит следующим образом:
+    \[ \frac{d}{dt}\frac{\partial L}{\partial \dot{\theta}}-\frac{\partial L}{\partial \theta}=0. \]
+
+    Вычислим производные, которые используются в этом выражении:
+    \[ \frac{\partial L}{\partial \dot{\theta}} = ml^2 \dot{\theta} - mAl\omega \sin{\omega t} \sin{\theta}, \] 
+    \[ \frac{\partial L}{\partial \theta} = -mAl\omega\sin{\omega t} \cos{\theta} \dot{\theta} - mgl \sin{\theta}. \]
+
+    В итоге, уравнение Эйлера-Лагранжа примет вид:
+    \[ ml^2 \ddot{\theta} - mAl\omega^2 \cos{\omega t} \sin{\theta} - mAl\omega \sin{\omega t} \cos{\theta} \dot{\theta} = \]
+    \[ = -mAl\omega \sin{\omega t} \cos{\theta} \dot{\theta} - mgl \sin{\theta}. \]
+\end{frame}
+
+\begin{frame}{Уравнение движения Маятника Капицы}
+    Сократив одинаковые слагаемые и поделив правую и левую части на $ml^2$ получим искомое дифференциальное уравнение, описывающее эволюцию фазы маятника
+
+    \[ \ddot{\theta} = \frac{A \omega^{2}}{l} \cos \omega t \sin \theta - \frac{g}{l} \sin \theta \, . \]
+
+    Если же мы хотим исследовать маятник при наличии затухания (например, вязкость среды), то уравнение примет вид:
+
+    \[ \ddot{\theta} = \frac{A \omega^{2}}{l} \cos \omega t \sin \theta - \frac{g}{l} \sin \theta \color{red}{-b \dot{\theta}}\color{black} \, , \]
+    
+    где $b$ -- коэффициент затухания маятника.
+\end{frame}
+
+\section{Моделирование движения маятника на Python}
+\begin{frame}{Демонстрация}
+    Демонстрация моделирования движения маятника Капицы, график изменения координаты y груза от времени, график изменения энергии маятника от времени.
+\end{frame}
+
+\section{Параметрический резонанс}
+\begin{frame}{Маятник Капицы и его законы движения}
+    Для малых колебаний ($\theta$ \ll 1) уравнение упрощается:
+    
+    \[ \ddot{\theta}+\Big(\frac{g}{l}-\frac{A\omega^2}{l}\cos{\omega t}\Big)\theta=0. \]
+
+    \[ \tau=\omega t, \text{ } \delta=\frac{4g}{l\omega^2}, \text{ } \varepsilon=\frac{4A}{l} \hookrightarrow \frac{d^2\theta}{d\tau^2}+(\delta-\varepsilon\cos{\tau})\theta=0 \]
+    
+    Это \texttt{уравнение Матьё}, которое описывает параметрический резонанс. Его решение зависит от соотношения частот:
+    \begin{itemize}
+        \item Если $\varepsilon=0$ (нет вибрации), то маятник устойчив, так как $\delta>0$ ($\theta=0$ - нижнее положение равновесия);
+        \item Если $\omega\gg \sqrt{\frac{g}{l}}$, верхнее положение стабилизируется за счёт виртуальной потенциальной ямы.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Маятник Капицы и его законы движения}
+    Для малых колебаний ($\theta$ \ll 1) уравнение упрощается:
+    
+    \[ \frac{d^2\theta}{d\tau^2}+(\delta-\varepsilon\cos{\tau})\theta=0 \]
+    
+    \begin{itemize}
+        \item Если $\omega\approx 2\sqrt{\frac{g}{l}}=2\omega_0$, возникает \texttt{параметрическая неустойчивость}(маятник раскачивается даже без начального толчка).
+    \end{itemize}
+
+    \paragraph{Виртуальная потенциальная яма:}
+    \[ \text{П}_{\text{эфф}}\approx-\frac{1}{2}\Big(\frac{g}{l}-\frac{A^2\omega^2}{2l^2}\Big)\theta^2. \]
+
+    Если $\frac{A^2\omega^2}{2l^2}>\frac{g}{l}\Leftrightarrow A^2\omega^2>2gl$, то возникает условие стабилизации.
+    
+\end{frame}
+
+\begin{frame}{Демонстрация}
+    Демонстрация параметрического резонанса у маятника Капицы.
+\end{frame}
+
+\section{Бифуркации}
+\begin{frame}{Бифуркации}
+    Рассмотрим стационарную (склерономную) механическую систему, в которой кинетическая энергия $T=\dot{\mathbf{q}}^TA(\mathbf{q})\dot{\mathbf{q}}/2$ является строго положительно-определенной квадратичной формой обобщенных скоростей, а вектор обобщенных сил $\mathbf{Q}(\mathbf{q}, \dot{\mathbf{q}}, \alpha)$ зависит от скалярного параметра $\alpha$. Положениями равновесия $\mathbf{q}^0$ такой системы являются решения векторного уранения:
+    $$
+    \mathbf{f(\mathbf{q}, \alpha)}=\mathbf{Q}(\mathbf{q}, \mathbf{0}, \alpha)=0
+    $$
+    Функции $\mathbf{q^0}(\alpha)$, описывающие зависимость положений равновесия от параметра $\alpha$, называются \texttt{кривыми равновесия} системы.
+\end{frame}
+
+\begin{frame}{Бифуркации}
+    Если в положении равновеси $\mathbf{q}^0(\alpha)$ выполняется условие
+    $$
+    \det{\Big(\frac{\partial\mathbf{f}(\mathbf{q}, \alpha)}{\partial\mathbf{q}^T}\Big)}\neq 0,
+    $$
+    то по теореме о неявных функциях в окрестности значения $\alpha$ существует единственное решение $\Delta\mathbf{q}^0(\Delta\alpha)$, которое в первом приближении описывается формулой:
+    $$
+    \Delta\mathbf{q}^0=\Big(\frac{\partial\mathbf{f}}{\partial\mathbf{q}^T} \Big)^{-1}\Delta\alpha.
+    $$
+    Если же в положении равновесия $\mathbf{q}^0(\alpha^*)$ матрица $\partial\mathbf{f}/\partial\mathbf{q}^T$ вырождена, т.е.
+    $$
+    \det{\Big(\frac{\partial\mathbf{f}(\mathbf{q}, \alpha^*)}{\partial\mathbf{q}^T} \Big)}=0,
+    $$
+    то значение $\alpha^*$ называется \texttt{точкой бифуркации (точкой ветвления)} положения равновесия. В окрестностях точек бифуркации решение $\Delta\mathbf{q}^0(\Delta\alpha)$ свойством единственности не обладает.
+\end{frame}
+
+\begin{frame}{Бифуркации в маятнике Капицы}
+    Бифуркации происходят при изменении параметров $A$ и $\omega$. Основные сценарии:
+    \begin{enumerate}
+        \item \textbf{Бифуркации устойчивости нижнего положения ($\theta=0$)}
+        \begin{itemize}
+            \item При $A=0$ (нет колебаний) нижнее положение устойчиво;
+            \item При увеличении $A$ или $\omega$ оно может потерять устойчивость;
+            \item Тип положения равновесия -- центр.
+        \end{itemize}
+        \item \textbf{Появление устойчивого верхнего положения ($\theta=\pi$)}
+        \begin{itemize}
+            \item При $A^2\omega^2>2gl$ верхнее положение становится устойчивым;
+            \item Это бифуркация типа "седло-центр" при малый частотах.
+        \end{itemize}
+        \item \textbf{Хаотическое поведение при промежуточных частотах}
+        \begin{itemize}
+            \item В некоторых диапазонах $\omega$ движение становится хаотическим из-за конкуренции между резонансами.
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Бифуркационная диаграмма для маятника Капицы}
+    \begin{enumerate}
+        \item \textbf{Критическая частота}: при $A^2\omega^2=2gl$ происходит бифуркация, при которой:
+        \begin{itemize}
+            \item нижнее положение теряет устойчивость;
+            \item верхнее положение приобретает устойчивость.
+        \end{itemize}
+        Это соотвествует параметрическому резонансу.
+        \item \textbf{Области устойчивости}:
+        \begin{itemize}
+            \item Область 1 ($A^2\omega^2<2gl$): только $\theta=0$ устойчиво;
+            \item Область 2 ($A^2\omega^2>2gl$): $\theta=0$ - неустойчиво, $\theta=\pi$ - устойчиво.
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\section{Моделирование бифуркаций маятника на Python}
+\begin{frame}{Демонстрация}
+    Демонстрация бифуркационной диаграммы маятника Капицы.
+\end{frame}
+
+\begin{frame}{Спасибо за внимание}
+    \begin{center}
+        Готовы ответить на все ваши вопросы!
+    \end{center}
+\end{frame}
+
+\end{document}
